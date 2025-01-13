@@ -25,4 +25,9 @@ public class TicketController {
    public ResponseEntity<TicketResponse> getById(@PathVariable UUID id){
        return ResponseEntity.ok(ticketService.read(id));
    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TicketResponse> update(@PathVariable UUID id,@RequestBody TicketRequest request){
+        return ResponseEntity.ok(this.ticketService.update(request, id));
+    }
 }

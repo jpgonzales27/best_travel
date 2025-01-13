@@ -44,7 +44,7 @@ public class TicketService implements ITicketService {
                 .build();
 
         var ticketPersisted = ticketRepository.save(ticketToPersist);
-
+        log.info("Ticket saved with id: {}", ticketPersisted.getId());
         return entityToResponse(ticketPersisted);
     }
 
@@ -56,7 +56,19 @@ public class TicketService implements ITicketService {
 
     @Override
     public TicketResponse update(TicketRequest request, UUID uuid) {
-        return null;
+        var ticketToUpdate = ticketRepository.findById(uuid).orElseThrow();
+        var fly  = flyRepository.findById(request.getIdFly()).orElseThrow();
+
+        ticketToUpdate.setFly(fly);
+        ticketToUpdate.setPrice(fly.getPrice());
+        ticketToUpdate.setDepartureDate(LocalDateTime.now());
+        ticketToUpdate.setArrivalDate(LocalDateTime.now());
+
+        var ticketUpdated = this.ticketRepository.save(ticketToUpdate);
+
+        log.info("Ticket updated with id {}", ticketUpdated.getId());
+
+        return this.entityToResponse(ticketToUpdate);
     }
 
     @Override
