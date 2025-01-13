@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -28,6 +29,8 @@ public class TicketService implements ITicketService {
     private final TicketRepository ticketRepository;
     private final CustomerRepository customerRepository;
 
+    public static final BigDecimal charger_price_percentage = BigDecimal.valueOf(0.25);
+
     @Override
     public TicketResponse created(TicketRequest request) {
         var fly = flyRepository.findById(request.getIdFly()).orElseThrow();
@@ -37,7 +40,7 @@ public class TicketService implements ITicketService {
                 .id(UUID.randomUUID())
                 .fly(fly)
                 .customer(customer)
-                .price(fly.getPrice())
+                .price(fly.getPrice().add(fly.getPrice().multiply(charger_price_percentage)))
                 .purchaseDate(LocalDate.now())
                 .arrivalDate(LocalDateTime.now())
                 .departureDate(LocalDateTime.now())
@@ -60,7 +63,7 @@ public class TicketService implements ITicketService {
         var fly  = flyRepository.findById(request.getIdFly()).orElseThrow();
 
         ticketToUpdate.setFly(fly);
-        ticketToUpdate.setPrice(fly.getPrice());
+        ticketToUpdate.setPrice(fly.getPrice().add(fly.getPrice().multiply(charger_price_percentage)));
         ticketToUpdate.setDepartureDate(LocalDateTime.now());
         ticketToUpdate.setArrivalDate(LocalDateTime.now());
 
@@ -86,5 +89,11 @@ public class TicketService implements ITicketService {
         response.setFly(flyResponse);
 
         return response;
+    }
+
+    @Override
+    public BigDecimal findPrice(Long flyId) {
+        var fly = this.flyRepository.findById(flyId).orElseThrow();
+        return fly.getPrice().add(fly.getPrice().multiply(charger_price_percentage));
     }
 }
