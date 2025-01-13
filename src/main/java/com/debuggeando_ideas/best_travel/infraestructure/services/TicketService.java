@@ -73,7 +73,8 @@ public class TicketService implements ITicketService {
 
     @Override
     public void delete(UUID uuid) {
-
+        var ticketToDelete = ticketRepository.findById(uuid).orElseThrow();
+        ticketRepository.delete(ticketToDelete);
     }
 
     private TicketResponse entityToResponse(TicketEntity entity) {
