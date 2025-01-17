@@ -47,7 +47,7 @@ public class TourHelper {
     public Set<ReservationEntity> createReservations(HashMap<HotelEntity, Integer> hotels, CustomerEntity customer) {
         var response = new HashSet<ReservationEntity>(hotels.size());
 
-        hotels.forEach((hotel,totalDays) -> {
+        hotels.forEach((hotel, totalDays) -> {
             var reservationToPersist = ReservationEntity.builder()
                     .id(UUID.randomUUID())
                     .hotel(hotel)
@@ -64,11 +64,35 @@ public class TourHelper {
         return response;
     }
 
-    public TicketEntity createTicket() {
-        return null;
+    public TicketEntity createTicket(FlyEntity fly, CustomerEntity customer) {
+
+        var ticketToPersist = TicketEntity.builder()
+                .id(UUID.randomUUID())
+                .fly(fly)
+                .customer(customer)
+                .price(fly.getPrice().add(fly.getPrice().multiply(TicketService.charger_price_percentage)))
+                .purchaseDate(LocalDate.now())
+                .departureDate(BestTravelUtil.getRandomSoon())
+                .arrivalDate(BestTravelUtil.getRandomLatter())
+                .arrivalDate(BestTravelUtil.getRandomLatter())
+                .build();
+
+        return ticketRepository.save(ticketToPersist);
     }
 
-    public ReservationEntity createReservation() {
-        return null;
+    public ReservationEntity createReservation(HotelEntity hotel, CustomerEntity customer, Integer totalDays) {
+
+        var reservationToPersist = ReservationEntity.builder()
+                .id(UUID.randomUUID())
+                .hotel(hotel)
+                .customer(customer)
+                .totalDays(totalDays)
+                .dateTimeReservation(LocalDateTime.now())
+                .dateStart(LocalDate.now())
+                .dateEnd(LocalDate.now().plusDays(totalDays))
+                .price(hotel.getPrice().add(hotel.getPrice().multiply(ReservationService.charges_price_percentage)))
+                .build();
+
+        return reservationRepository.save(reservationToPersist);
     }
 }

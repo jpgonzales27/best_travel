@@ -7,6 +7,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/tour")
 @AllArgsConstructor
@@ -31,4 +35,27 @@ public class TourController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{tourId}/remove_ticket/{ticketId}")
+    public ResponseEntity<Void> deleteTicket(@PathVariable Long tourId, @PathVariable UUID ticketId){
+        tourService.removeTicket(tourId, ticketId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{tourId}/add_ticket/{flyId}")
+    public ResponseEntity<Map<String, UUID>> addTicket(@PathVariable Long tourId, @PathVariable Long flyId){
+        var response = Collections.singletonMap("tickedId",tourService.addTicket(tourId,flyId));
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{tourId}/remove_reservation/{reservationId}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long tourId, @PathVariable UUID reservationId){
+        tourService.removeReservation(tourId, reservationId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{tourId}/add_reservation/{hotelId}")
+    public ResponseEntity<Map<String, UUID>> addReservation(@PathVariable Long tourId, @PathVariable Long hotelId,@RequestParam Integer totalDays){
+        var response = Collections.singletonMap("reservationId",tourService.addReservation(tourId,hotelId,totalDays));
+        return ResponseEntity.ok(response);
+    }
 }
