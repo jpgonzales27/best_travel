@@ -20,4 +20,14 @@ public class CustomerHelper {
         }
         customerRepository.save(customerToUpdate);
     }
+
+    public void decrease(String customerId, Class<?> type) {
+        var customerToUpdate = customerRepository.findById(customerId).orElseThrow();
+        switch (type.getSimpleName()) {
+            case "TourService" -> customerToUpdate.setTotalTours(customerToUpdate.getTotalTours() - 1);
+            case "TicketService" -> customerToUpdate.setTotalFlights(customerToUpdate.getTotalFlights() - 1);
+            case "ReservationService" -> customerToUpdate.setTotalLodgings(customerToUpdate.getTotalLodgings() - 1);
+        }
+        customerRepository.save(customerToUpdate);
+    }
 }

@@ -92,6 +92,7 @@ public class ReservationService implements IReservationService {
     @Override
     public void delete(UUID uuid) {
         ReservationEntity reservation = reservationRepository.findById(uuid).orElseThrow();
+        customerHelper.decrease(reservation.getCustomer().getDni(), ReservationService.class);
         reservationRepository.delete(reservation);
     }
 

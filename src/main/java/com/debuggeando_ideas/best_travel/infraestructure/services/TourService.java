@@ -71,6 +71,7 @@ public class TourService implements ITourService {
     @Override
     public void delete(Long id) {
         var tourToDelete = this.tourRepository.findById(id).orElseThrow();
+        customerHelper.decrease(tourToDelete.getCustomer().getDni(), TourService.class);
         tourRepository.delete(tourToDelete);
     }
 
