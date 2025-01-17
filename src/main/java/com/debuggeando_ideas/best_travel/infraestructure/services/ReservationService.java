@@ -12,6 +12,7 @@ import com.debuggeando_ideas.best_travel.domain.repositories.jpa.HotelRepository
 import com.debuggeando_ideas.best_travel.domain.repositories.jpa.ReservationRepository;
 import com.debuggeando_ideas.best_travel.domain.repositories.jpa.TicketRepository;
 import com.debuggeando_ideas.best_travel.infraestructure.abstract_services.IReservationService;
+import com.debuggeando_ideas.best_travel.infraestructure.helpers.CustomerHelper;
 import com.debuggeando_ideas.best_travel.util.BestTravelUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ public class ReservationService implements IReservationService {
     private final HotelRepository hotelRepository;
     private final ReservationRepository reservationRepository;
     private final CustomerRepository customerRepository;
+    private final CustomerHelper customerHelper;
 
     public static final BigDecimal charges_price_percentage = BigDecimal.valueOf(0.20);
 
@@ -54,6 +56,8 @@ public class ReservationService implements IReservationService {
                 .build();
 
         var reservationPersisted = reservationRepository.save(reservationToPersist);
+        customerHelper.incrase(customer.getDni(), ReservationService.class);
+
         log.info("Reservation saved with id: {}", reservationPersisted.getId());
         return entityToResponse(reservationPersisted);
     }
@@ -89,7 +93,6 @@ public class ReservationService implements IReservationService {
     public void delete(UUID uuid) {
         ReservationEntity reservation = reservationRepository.findById(uuid).orElseThrow();
         reservationRepository.delete(reservation);
-        ;
     }
 
     private ReservationResponse entityToResponse(ReservationEntity entity) {

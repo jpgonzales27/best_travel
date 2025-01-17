@@ -8,6 +8,7 @@ import com.debuggeando_ideas.best_travel.domain.repositories.jpa.FlyRepository;
 import com.debuggeando_ideas.best_travel.domain.repositories.jpa.HotelRepository;
 import com.debuggeando_ideas.best_travel.domain.repositories.jpa.TourRepository;
 import com.debuggeando_ideas.best_travel.infraestructure.abstract_services.ITourService;
+import com.debuggeando_ideas.best_travel.infraestructure.helpers.CustomerHelper;
 import com.debuggeando_ideas.best_travel.infraestructure.helpers.TourHelper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class TourService implements ITourService {
     private final HotelRepository hotelRepository;
     private final CustomerRepository customerRepository;
     private final TourHelper tourHelper;
+    private final CustomerHelper customerHelper;
 
     @Override
     public TourResponse create(TourRequest request) {
@@ -46,6 +48,7 @@ public class TourService implements ITourService {
                 .build();
 
         var tourSaved = tourRepository.save(tourToSave);
+        customerHelper.incrase(customer.getDni(), TourService.class);
 
         return TourResponse.builder()
                 .reservationIds(tourSaved.getReservations().stream().map(ReservationEntity::getId).collect(Collectors.toSet()))
