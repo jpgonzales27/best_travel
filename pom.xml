@@ -33,6 +33,11 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<!--Spring Validation-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 		<!--Lombok getters y setters-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
