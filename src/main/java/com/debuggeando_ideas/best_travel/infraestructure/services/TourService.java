@@ -8,6 +8,7 @@ import com.debuggeando_ideas.best_travel.domain.repositories.jpa.FlyRepository;
 import com.debuggeando_ideas.best_travel.domain.repositories.jpa.HotelRepository;
 import com.debuggeando_ideas.best_travel.domain.repositories.jpa.TourRepository;
 import com.debuggeando_ideas.best_travel.infraestructure.abstract_services.ITourService;
+import com.debuggeando_ideas.best_travel.infraestructure.helpers.BlackListHelper;
 import com.debuggeando_ideas.best_travel.infraestructure.helpers.CustomerHelper;
 import com.debuggeando_ideas.best_travel.infraestructure.helpers.TourHelper;
 import com.debuggeando_ideas.best_travel.util.enums.Tables;
@@ -32,9 +33,12 @@ public class TourService implements ITourService {
     private final CustomerRepository customerRepository;
     private final TourHelper tourHelper;
     private final CustomerHelper customerHelper;
+    private final BlackListHelper blackListHelper;
 
     @Override
     public TourResponse create(TourRequest request) {
+
+        blackListHelper.isInBlackListCustomer(request.getCustomerId());
 
         var customer = customerRepository.findById(request.getCustomerId()).orElseThrow(() -> new IdNotFoundException(Tables.customer.name()));
         var flights = new HashSet<FlyEntity>();

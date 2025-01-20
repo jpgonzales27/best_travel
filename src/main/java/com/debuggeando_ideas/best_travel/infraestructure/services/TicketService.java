@@ -8,6 +8,7 @@ import com.debuggeando_ideas.best_travel.domain.repositories.jpa.CustomerReposit
 import com.debuggeando_ideas.best_travel.domain.repositories.jpa.FlyRepository;
 import com.debuggeando_ideas.best_travel.domain.repositories.jpa.TicketRepository;
 import com.debuggeando_ideas.best_travel.infraestructure.abstract_services.ITicketService;
+import com.debuggeando_ideas.best_travel.infraestructure.helpers.BlackListHelper;
 import com.debuggeando_ideas.best_travel.infraestructure.helpers.CustomerHelper;
 import com.debuggeando_ideas.best_travel.util.BestTravelUtil;
 import com.debuggeando_ideas.best_travel.util.enums.Tables;
@@ -33,11 +34,15 @@ public class TicketService implements ITicketService {
     private final TicketRepository ticketRepository;
     private final CustomerRepository customerRepository;
     private final CustomerHelper customerHelper;
+    private final BlackListHelper blackListHelper;
 
     public static final BigDecimal charger_price_percentage = BigDecimal.valueOf(0.25);
 
     @Override
     public TicketResponse created(TicketRequest request) {
+
+        blackListHelper.isInBlackListCustomer(request.getIdClient());
+
         var fly = flyRepository.findById(request.getIdFly()).orElseThrow(() -> new IdNotFoundException(Tables.fly.name()));
         var customer = customerRepository.findById(request.getIdClient()).orElseThrow(() -> new IdNotFoundException(Tables.customer.name()));
 

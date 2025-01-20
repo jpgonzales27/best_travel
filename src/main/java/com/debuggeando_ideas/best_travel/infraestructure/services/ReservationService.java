@@ -12,6 +12,7 @@ import com.debuggeando_ideas.best_travel.domain.repositories.jpa.HotelRepository
 import com.debuggeando_ideas.best_travel.domain.repositories.jpa.ReservationRepository;
 import com.debuggeando_ideas.best_travel.domain.repositories.jpa.TicketRepository;
 import com.debuggeando_ideas.best_travel.infraestructure.abstract_services.IReservationService;
+import com.debuggeando_ideas.best_travel.infraestructure.helpers.BlackListHelper;
 import com.debuggeando_ideas.best_travel.infraestructure.helpers.CustomerHelper;
 import com.debuggeando_ideas.best_travel.util.BestTravelUtil;
 import com.debuggeando_ideas.best_travel.util.enums.Tables;
@@ -37,11 +38,14 @@ public class ReservationService implements IReservationService {
     private final ReservationRepository reservationRepository;
     private final CustomerRepository customerRepository;
     private final CustomerHelper customerHelper;
+    private final BlackListHelper blackListHelper;
 
     public static final BigDecimal charges_price_percentage = BigDecimal.valueOf(0.20);
 
     @Override
     public ReservationResponse created(ReservationRequest request) {
+
+        blackListHelper.isInBlackListCustomer(request.getIdClient());
 
         var hotel = hotelRepository.findById(request.getIdHotel()).orElseThrow(() -> new IdNotFoundException(Tables.hotel.name()));
         var customer = customerRepository.findById(request.getIdClient()).orElseThrow(() -> new IdNotFoundException(Tables.customer.name()));
