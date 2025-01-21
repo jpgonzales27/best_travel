@@ -1,10 +1,8 @@
 package com.debuggeando_ideas.best_travel.api.controllers;
 
 import com.debuggeando_ideas.best_travel.api.models.request.ReservationRequest;
-import com.debuggeando_ideas.best_travel.api.models.request.TicketRequest;
 import com.debuggeando_ideas.best_travel.api.models.response.ErrorsResponse;
 import com.debuggeando_ideas.best_travel.api.models.response.ReservationResponse;
-import com.debuggeando_ideas.best_travel.api.models.response.TicketResponse;
 import com.debuggeando_ideas.best_travel.infraestructure.abstract_services.IReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
