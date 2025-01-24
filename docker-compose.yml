@@ -15,3 +15,11 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
+
+  cache-db:
+    image: redis:6.2-alpine
+    container_name: best_travel_cache
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --loglevel warning --requirepass debuggeandoideas
