@@ -55,4 +55,14 @@ public class RedisConfig {
         );
         return new RedissonSpringCacheManager(redissonClient, configs);
     }
+
+    @CacheEvict(cacheNames ={
+            CacheConstants.FLY_CACHE_NAME,
+            CacheConstants.HOTEL_CACHE_NAME
+    }, allEntries = true)
+    @Scheduled(cron = CacheConstants.SCHEDULED_RESET_CACHE)
+    @Async
+    public void deleteCache() {
+        log.info("Clean cache");
+    }
 }
