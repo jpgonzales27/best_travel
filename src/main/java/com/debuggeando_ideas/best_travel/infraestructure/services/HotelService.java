@@ -1,14 +1,14 @@
 package com.debuggeando_ideas.best_travel.infraestructure.services;
 
-import com.debuggeando_ideas.best_travel.api.models.response.FlyResponse;
 import com.debuggeando_ideas.best_travel.api.models.response.HotelResponse;
-import com.debuggeando_ideas.best_travel.domain.entities.jpa.FlyEntity;
 import com.debuggeando_ideas.best_travel.domain.entities.jpa.HotelEntity;
 import com.debuggeando_ideas.best_travel.domain.repositories.jpa.HotelRepository;
 import com.debuggeando_ideas.best_travel.infraestructure.abstract_services.IHotelService;
+import com.debuggeando_ideas.best_travel.util.constans.CacheConstants;
 import com.debuggeando_ideas.best_travel.util.enums.SortType;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,6 +26,7 @@ public class HotelService implements IHotelService {
 
     private final HotelRepository hotelRepository;
     @Override
+    @Cacheable(value = CacheConstants.HOTEL_CACHE_NAME)
     public Set<HotelResponse> readByRating(Integer rating) {
         return hotelRepository.findByRatingGreaterThan(rating).stream()
                 .map(this::entityToResponse)
@@ -44,6 +45,7 @@ public class HotelService implements IHotelService {
     }
 
     @Override
+    @Cacheable(value = CacheConstants.HOTEL_CACHE_NAME)
     public Set<HotelResponse> readLessPrice(BigDecimal price) {
         return hotelRepository.findByPriceLessThan(price).stream()
                 .map(this::entityToResponse)
@@ -51,7 +53,15 @@ public class HotelService implements IHotelService {
     }
 
     @Override
+    @Cacheable(value = CacheConstants.HOTEL_CACHE_NAME)
     public Set<HotelResponse> readBetweenPrices(BigDecimal min, BigDecimal max) {
+
+        try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException();
+        }
+
         return hotelRepository.findByPriceIsBetween(min,max).stream()
                 .map(this::entityToResponse)
                 .collect(Collectors.toSet());
