@@ -17,7 +17,7 @@ import java.util.ArrayList;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BadRequestController {
 
-    @ExceptionHandler({IdNotFoundException.class})
+    @ExceptionHandler({IdNotFoundException.class,UsernameNotFoundException.class})
     public BaseErrorResponse handleIdNotFound(RuntimeException exception) {
         return ErrorResponse.builder()
                 .error(exception.getMessage())
@@ -34,15 +34,6 @@ public class BadRequestController {
 
         return ErrorsResponse.builder()
                 .errors(errors)
-                .status(HttpStatus.BAD_REQUEST.name())
-                .code(HttpStatus.BAD_REQUEST.value())
-                .build();
-    }
-
-    @ExceptionHandler({UsernameNotFoundException.class})
-    public BaseErrorResponse handleUsernameNotFound(RuntimeException exception) {
-        return ErrorResponse.builder()
-                .error(exception.getMessage())
                 .status(HttpStatus.BAD_REQUEST.name())
                 .code(HttpStatus.BAD_REQUEST.value())
                 .build();
