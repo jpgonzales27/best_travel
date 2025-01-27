@@ -27,6 +27,7 @@ public class SecurityConfig {
     private static final String[] USER_RESOURCES = {"/tour/**","/ticket/**","/reservation/**"};
     private static final String[] ADMIN_RESOURCES = {"/user/**", "/report/**"};
     private static final String LOGIN_RESOURCE = "/login";
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -34,12 +35,32 @@ public class SecurityConfig {
     }
 
     @Bean
-    private SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults());
 
         http.exceptionHandling(e -> e.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(LOGIN_RESOURCE)));
+
+        return http.build();
+    }
+
+
+    @Bean
+    public SecurityFilterChain appSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .formLogin()
+                .and()
+                .authorizeHttpRequests()
+                .requestMatchers(PUBLIC_RESOURCES)
+                .permitAll()
+                .requestMatchers(USER_RESOURCES)
+                .authenticated()
+                .requestMatchers(ADMIN_RESOURCES)
+                .hasAuthority(ROLE_ADMIN)
+                .and()
+                .oauth2ResourceServer()
+                .jwt();
 
         return http.build();
     }
