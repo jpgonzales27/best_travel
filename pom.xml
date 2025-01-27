@@ -82,6 +82,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
+		<!--Spring security auth server-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-authorization-server</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		<!--Spring security resource server-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-resource-server</artifactId>
+			<version>6.0.2</version>
+		</dependency>
 		<!--Lombok getters y setters-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
